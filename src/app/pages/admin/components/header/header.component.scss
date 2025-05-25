@@ -1,0 +1,97 @@
+.top-nav {
+  padding: 5px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  aside {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+  }
+}
+.nav-main {
+  border: none;   
+  background-color: #0070f4;
+  .bottom-nav {
+    padding: 25px;
+    .nav-item .nav-link{
+      // color: #fff;
+      text-decoration: none;
+      background: none;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  ::ng-deep [tuiSubheader][compact] .t-nav-subheader {
+    border: none;
+
+  }
+}
+.header-logo {
+  height: 30px;
+  max-width: 150px;
+}
+
+.flag-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.box-introduce-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.kv-btn-primary {
+  background: var(--tui-primary, #007bff);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  &:hover {
+    background: var(--tui-primary-hover, #0056b3);
+  }
+}
+
+.mobile-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  [tuiNavigationSegments] {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px;
+    &.mobile-open {
+      display: flex;
+    }
+  }
+
+  [tuiNavigationSegments] button {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 5px;
+  }
+}
+
+:host {
+  --tui-navigation-background: #fff;
+  --tui-navigation-border: 1px solid #eee;
+}

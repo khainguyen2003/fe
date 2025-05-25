@@ -1,0 +1,35 @@
+.main {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background-color: var(--tui-background-neutral-1);
+  min-height: 100vh;
+}
+
+.filter-section {
+  width: 300px;
+  .filter-card {
+    background-color: #fff;
+  }
+}
+
+.search-container {
+  flex-grow: 1;
+  .search-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .search-fields {
+    width: 300px;
+  }
+
+  .form-action {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+}
+

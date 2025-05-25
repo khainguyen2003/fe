@@ -1,0 +1,94 @@
+<header tuiHeader="h1" class="top-nav">
+  <!-- Logo -->
+  <a tuiNavigationLogo [routerLink]="''">
+    <img class="header-logo" src="assets/img/logo/motchilltv.webp" alt="Trang chủ" />
+  </a>
+
+  <!-- Navigation Segments -->
+  <aside tuiAccessories>
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="mobile-menu-toggle"
+      appearance="secondary-grayscale"
+      iconStart="@tui.menu"
+      tuiIconButton
+      type="button"
+      (click)="toggleMobileMenu()"
+    ></button>
+
+    <app-language-switcher></app-language-switcher>
+
+    <!-- User Profile -->
+    <button class="user-menu"
+      [tuiDropdown]="userMenu"
+      [tuiDropdownManual]="openUserMenu"
+      [tuiObscuredEnabled]="openUserMenu"
+      (click)="onUserMenuClick()"
+      (keydown)="onKeyDown($event)"
+      (tuiActiveZoneChange)="onUserMenuActiveZone($event)"
+      (tuiObscured)="onUserMenuObscured($event)"
+      style="border: none; background: none;"
+    >
+      <tui-avatar src="@tui.user"></tui-avatar>
+
+      <ng-template #userMenu>
+        <tui-data-list size="s">
+          <button tuiOption type="button">Tài khoản</button>
+          <button tuiOption type="button" (click)="logout()">Đăng xuất</button>
+        </tui-data-list>
+      </ng-template>
+    </button>
+  </aside>
+
+  <!-- Divider -->
+  <hr />
+</header>
+
+<main tuiNavigationMain class="nav-main">
+  <nav compact tuiSubheader class="bottom-nav">
+    <div *ngFor="let menu of menus" class="nav-item">
+      <!-- Không có submenu -->
+      <button
+        *ngIf="!menu.subMenus?.length"
+        tuiButton
+        type="button"
+        [routerLink]="menu.link"
+        routerLinkActive="active"
+        class="nav-link tui-text_h6"
+        [iconStart]="menu?.icon ?? null"
+      >
+        {{ menu.name }}
+      </button>
+
+      <!-- Có submenu -->
+      <ng-container *ngIf="menu.subMenus?.length">
+        <ng-template #menuDropdown>
+          <tui-data-list>
+            <button
+              tuiOption
+              type="button"
+              *ngFor="let subMenu of menu.subMenus"
+              [routerLink]="subMenu.link"
+              [iconStart]="subMenu?.icon ?? null"
+            >
+              {{ subMenu.name }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+
+        <button
+          tuiButton
+          tuiChevron
+          tuiDropdownOpen
+          type="button"
+          [tuiDropdown]="menuDropdown"
+          class="nav-link tui-text_h6"
+        >
+          <span style="overflow: hidden; text-overflow: ellipsis;">
+            {{ menu.name }}
+          </span>
+        </button>
+      </ng-container>
+    </div>
+  </nav>
+</main>

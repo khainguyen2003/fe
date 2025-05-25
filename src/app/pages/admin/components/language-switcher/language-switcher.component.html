@@ -1,0 +1,28 @@
+
+<ng-container *transloco="let t">
+  <tui-textfield
+    tuiChevron
+    tuiTextfieldSize="m"
+    [tuiDropdownAlign]="'right'"
+    [tuiDropdownDirection]="'bottom'"
+    style="width: 150px;"
+    [tuiTextfieldCleaner]="false"
+    [stringify]="stringifyLabelSelectHasTranslate"
+
+    >
+    <input
+      tuiSelect
+      [formControl]="languageControl"
+    />
+
+    <tui-data-list-wrapper
+      *tuiTextfieldDropdown
+      new
+      [items]="languages"
+      [itemContent]="itemTemplate"
+    />
+  </tui-textfield>
+  <ng-template #itemTemplate let-lang>
+    {{ t(lang.label) }}
+  </ng-template>
+</ng-container>  

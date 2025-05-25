@@ -1,0 +1,69 @@
+<div
+  class="container tui-space_bottom-1"
+  style="padding: 12px 0"
+  *transloco="let t"
+>
+  <div class="top">
+    <div class="top__left">
+      <tui-avatar
+        *ngIf="item.status === 'warning'"
+        src="tuiIconWarning"
+        class="tui-space_top-3 tui-space_right-3 background-avartar-warn icon-style"
+        size="s"
+      />
+      <tui-avatar
+        *ngIf="item.status === 'error'"
+        src="tuiIconClose"
+        class="tui-space_top-3 tui-space_right-3 background-avartar-close icon-style"
+        size="s"
+      />
+      <tui-avatar
+        *ngIf="item.status === 'success'"
+        src="tuiIconCheck"
+        class="tui-space_top-3 tui-space_right-3 background-avartar-check icon-style"
+        size="s"
+      />
+    </div>
+    <div class="top__right">
+      <div class="top__right-header">
+        <span
+          style="margin-top: 0"
+          class="tui-space_bottom-0 tui-text_title-1"
+          >{{ item.title }}
+        </span>
+
+        <button
+          tuiIconButton
+          iconLeft="tuiIconDismissOutline"
+          (click)="handleClosePush()"
+          variant="flat"
+        ></button>
+      </div>
+
+      <p style="margin-top: 0; font-weight: 400" class="tui-space_bottom-0">
+        {{ item.content }}
+      </p>
+    </div>
+  </div>
+  <div *ngIf="item.isShowBtn" class="bottom tui-space_top-3">
+    <button
+      tuiButton
+      appearance=""
+      class="t-button-content tui-space_top-0 tui-space_bottom-0"
+      style="color: var(--text-brand-primary-default); cursor: pointer"
+      (click)="handleDetailData()"
+    >
+      {{ t('translate.view_detail') }}
+    </button>
+
+    <button
+      tuiButton
+      appearance=""
+      class="t-button-content tui-space_top-0 tui-space_bottom-0"
+      style="color: var(--text-brand-primary-default); cursor: pointer"
+      (click)="handleClosePush()"
+    >
+      {{ t('translate.close') }}
+    </button>
+  </div>
+</div>

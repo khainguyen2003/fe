@@ -1,0 +1,29 @@
+<div class="row_posters">
+  <div class="content__main-title">
+    <h3 class="content__main-title-left">{{title}}</h3>
+    <h4 class="content__main-title-right">
+      <a href="#">Xem Tất Cả</a>
+    </h4>
+  </div>
+  <div class="content__main-posters">
+    <div class="content__main-icon left">
+      <i class="fa-solid fa-chevron-left"></i>
+    </div>
+    
+    <div class="content__main-posters-row">
+      @for (movie of movies; track $index) {
+        <div class="moviesposter-wrapper">
+          <a [routerLink]="['/phim', movie?.slug ? movie.slug : '']">
+            <img [src]="movie?.thumb_url || ''" [alt]="movie?.name || ''" />
+          </a>
+          <h3 class="moviesposter-title">{{movie?.name}}</h3>
+          <div class="moviesposter-practice">{{movie?.current_episode}}</div>
+          <div class="moviesposter-HD">{{movie?.quality}}</div>
+        </div>
+      }
+    </div>
+    <div class="content__main-icon right">
+      <i class="fa-solid fa-chevron-right"></i>
+    </div>
+  </div>
+</div>

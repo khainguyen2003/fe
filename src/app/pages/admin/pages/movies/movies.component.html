@@ -1,0 +1,23 @@
+<app-movie-list
+  *ngIf="currentPage === 'list'"
+  (createEvent)="createHandler()"
+  (updateEvent)="updateHandler($event)"
+  (copyEvent)="copyHandler($event)"
+  [pagination]="pagination"
+  [totalPage]="totalPage"
+  [$notification]="$notification"
+  [$detailInNoti]="$detail"
+/>
+<app-movie-create
+  *ngIf="currentPage === 'create'"
+  [initData]="initData"
+  [notification]="$notification"
+  (backEvent)="changeScreenHandler($event)"
+  (changeScreenEvent)="changeScreenHandler($event)"
+/>
+
+<app-notification
+  [value$]="$noti"
+  (notificationEvent)="detailDataHandler($event)"
+>
+</app-notification>

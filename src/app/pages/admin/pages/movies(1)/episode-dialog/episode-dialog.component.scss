@@ -1,0 +1,26 @@
+.stack {
+  margin-bottom: 1rem;
+}
+
+.dialog-content {
+  padding: 1rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid #ccc;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+:host ::ng-deep [tuiTextfieldLabelOutside] .t-label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}

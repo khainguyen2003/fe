@@ -1,0 +1,58 @@
+<tui-badge
+  *ngIf="type === 'success'"
+  size="m"
+  appearance="success"
+  class="badge-green"
+>
+  <tui-icon icon="bidvIconCheckmarkCircle"></tui-icon>
+  <div *transloco="let t">
+    {{ t('translate.' + label) }}
+  </div>
+</tui-badge>
+
+<tui-badge
+  *ngIf="type === 'danger'"
+  size="m"
+  appearance="error"
+  class="badge-red"
+>
+  <tui-icon icon="bidvIconDismissCircle"></tui-icon>
+  <div *transloco="let t">
+    {{ t('translate.' + label) }}
+  </div>
+</tui-badge>
+
+<tui-badge
+  *ngIf="type === 'warning'"
+  size="m"
+  appearance="warning"
+  class="badge-orange"
+>
+  <tui-icon icon="bidvIconClock"></tui-icon>
+  <div *transloco="let t">
+    {{ t('translate.' + label) }}
+  </div>
+</tui-badge>
+
+<tui-badge
+  *ngIf="type === 'info'"
+  size="m"
+  appearance="primary"
+>
+  <tui-icon icon="bidvIconSingleCheck"></tui-icon>
+  <div *transloco="let t">
+    {{ t('translate.' + label) }}
+  </div>
+</tui-badge>
+
+<tui-badge
+  *ngIf="type === 'gray'"
+  size="m"
+  appearance="neutral"
+  class="badge-gray"
+>
+  <tui-icon icon="bidvIconSubtractCircle"></tui-icon>
+  <div *transloco="let t">
+    {{ t('translate.' + label) }}
+  </div>
+</tui-badge>

@@ -1,0 +1,42 @@
+<form [formGroup]="episodeForm" (ngSubmit)="submitEpisode()">
+  <div class="dialog-content">
+    <div>{{test}}</div>
+    <h2>{{ editMode ? 'Chỉnh sửa tập phim' : 'Thêm tập phim' }}</h2>
+    <div class="stack">
+      <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+        <label tuiLabel>Số tập</label>
+        <input formControlName="episodeNumber" tuiInputNumber />
+      </tui-textfield>
+      <tui-error formControlName="episodeNumber" [error]="[] | tuiFieldError | async" />
+    </div>
+
+    <div class="stack">
+      <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+        <label tuiLabel>Tiêu đề</label>
+        <input formControlName="title" tuiTextfield />
+      </tui-textfield>
+      <tui-error formControlName="title" [error]="[] | tuiFieldError | async" />
+    </div>
+
+    <div class="stack">
+      <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+        <label tuiLabel>Mô tả</label>
+        <textarea formControlName="description" tuiTextfield></textarea>
+      </tui-textfield>
+      <tui-error formControlName="description" [error]="[] | tuiFieldError | async" />
+    </div>
+
+    <div class="stack">
+      <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+        <label tuiLabel>Nguồn video</label>
+        <input formControlName="sourceUrl" tuiTextfield />
+      </tui-textfield>
+      <tui-error formControlName="sourceUrl" [error]="[] | tuiFieldError | async" />
+    </div>
+
+    <div class="dialog-footer">
+      <button tuiButton appearance="secondary" (click)="handleCancel()">Hủy</button>
+      <button tuiButton type="submit" [disabled]="episodeForm.invalid">Lưu</button>
+    </div>
+  </div>
+</form>

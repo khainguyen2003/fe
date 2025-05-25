@@ -1,0 +1,16 @@
+{
+  "language": {
+    "vi": "Tiếng việt",
+    "en": "Tiếng anh"
+  },
+  "create": "Thêm mới",
+  "import-file": "Nhập file",
+  "export-file": "Xuất file",
+  "movie": {
+    "page-title": "Quản lý phim",
+    "name_required": "Tên không được bỏ trống",
+    "name_length": "Tên phim không được vượt quá 2000 ký tự",
+    "total_episode_min": "Tổng số tập không được nhỏ hơn 1",
+    "genre_required": "Thể loại phim không được để trống"
+  }
+}

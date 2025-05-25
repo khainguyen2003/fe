@@ -1,0 +1,43 @@
+<div class="content">
+  <div class="content__banner">
+    <video controls autoplay loop muted>
+      <source src="{{bannerMovie?.videoUrl}}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="content__banner-show">
+      <div class="content__banner-name">
+        <img src="{{bannerMovie?.logoUrl}}" alt="{{bannerMovie?.name}}" />
+      </div>
+      <p class="content__banner-description">
+        {{bannerMovie?.description}}
+      </p>
+      <div class="content__banner--btn" >
+        <button class="content__banner-play" >
+          <a href="/phim/{{bannerMovie?.slug}}" style="text-decoration: none; color:black;"><i class="fa-solid fa-play"></i>Phát</a>
+        </button>
+        <button class="content__banner-infor">
+          <i class="fa-solid fa-circle-info"></i>Chi Tiết
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="content__main">
+    <app-genre-movie-list
+      [title]="'Phim Mới Cập Nhật'"
+      [movies]="phimMoiCapNhat"
+    >
+
+    </app-genre-movie-list>
+    <app-genre-movie-list
+      [title]="'Phim lẻ'"
+      [movies]="phimLe"
+    >
+
+    </app-genre-movie-list>
+    <app-genre-movie-list
+      [title]="'Phim bộ'"
+      [movies]="phimBo"
+    >
+    </app-genre-movie-list>
+  </div>
+</div>

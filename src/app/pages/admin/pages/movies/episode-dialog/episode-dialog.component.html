@@ -1,0 +1,82 @@
+<ng-template let-observer [tuiDialogOptions]="{
+  size: 'l',
+  dismissible: false,
+  closeable: true,
+  data: { maxHeight: '90vh', width: '800px' }
+}" [(tuiDialog)]="isOpen" (tuiDialogChange)="handleCancel()">
+  <form [formGroup]="episodeForm" (ngSubmit)="submitEpisode()">
+    <h2>{{ type === 'create' ? 'Chỉnh sửa tập phim' : 'Thêm tập phim' }}</h2>
+    <fieldset>
+      <div class="stack">
+        <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+          <label tuiLabel>Tiêu đề</label>
+          <input formControlName="title" tuiTextfield />
+        </tui-textfield>
+        <tui-error formControlName="title" [error]="[] | tuiFieldError | async" />
+      </div>
+      <div class="stack">
+        <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+          <label tuiLabel>Số tập</label>
+          <input formControlName="episodeNumber" tuiInputNumber />
+        </tui-textfield>
+        <tui-error formControlName="episodeNumber" [error]="[] | tuiFieldError | async" />
+      </div>
+    </fieldset>
+    
+    <fieldset>
+      <div class="stack">
+        <label tuiLabel>
+          Mô tả
+          <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+            <textarea
+              formControlName="description"
+              tuiTextarea
+              [max]="6"
+              [min]="3"
+          ></textarea>
+          </tui-textfield>
+        </label>
+        <tui-error formControlName="description" [error]="[] | tuiFieldError | async" />
+      </div>
+    </fieldset>
+
+    <div class="stack">
+      <div class="upload-container">
+        <input type="file" ng2FileSelect [uploader]="uploader" (change)="onFileSelected($event)" [accept]="'video/*'"/>
+        <div class="button-group">
+          <button
+            tuiButton
+            appearance="primary"
+            [disabled]="uploader.queue.length === 0 || uploadProgress !== null"
+            (click)="uploadFile()"
+          >
+            <tui-icon icon="@tui.upload"></tui-icon>
+            Upload
+          </button>
+          <button
+            tuiButton
+            appearance="secondary"
+            iconStart="@tui.circle-minus"
+            [disabled]="uploadProgress === null"
+            (click)="cancelUpload()"
+          >
+            Cancel
+          </button>
+        </div>
+        <progress
+          max="100"
+          tuiProgressBar
+          [value]="uploadProgress"
+        >
+        {{ uploadProgress | number: '1.0-0' }}%
+        </progress>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button tuiButton appearance="secondary" (click)="handleCancel()">Hủy</button>
+      <button tuiButton type="submit" [disabled]="episodeForm.invalid">Lưu</button>
+    </div>
+  </form>
+</ng-template>
+

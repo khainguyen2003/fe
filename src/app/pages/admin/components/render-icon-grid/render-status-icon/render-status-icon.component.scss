@@ -1,0 +1,22 @@
+.badge-green {
+  --t-background-color: var(--background-semantic-positive-subtle);
+  --t-text-color: var(--text-semantic-positive-intermediate);
+  --t-icon-color: var(--foreground-semantic-positive-intermediate);
+}
+.badge-orange {
+  --t-background-color: var(--background-semantic-notice-subtle);
+  --t-text-color: var(--text-semantic-notice-intermediate);
+  --t-icon-color: var(--foreground-semantic-notice-intermediate);
+}
+
+.badge-red {
+  --t-background-color: var(--background-semantic-negative-subtle);
+  --t-text-color: var(--text-semantic-negative-intermediate);
+  --t-icon-color: var(--foreground-semantic-negative-intermediate);
+}
+
+.badge-blue {
+  --t-background-color: var(--background-semantic-informative-subtle);
+  --t-text-color: var(--text-semantic-informative-intermediate);
+  --t-icon-color: var(--foreground-semantic-infomative-intermediate);
+}

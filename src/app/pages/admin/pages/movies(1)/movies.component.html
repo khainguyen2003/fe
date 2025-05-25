@@ -1,0 +1,82 @@
+<!-- <section class="main" *transloco="let t">
+
+  <form class="search-container" [formGroup]="formSearch">
+    <div class="search-form-header">
+      <h2 class="page-title">{{t(tlHeader + 'page-title')}}</h2>
+      <div class="search-fields">
+        <tui-input
+          formControlName="name"
+          [tuiTextfieldCleaner]="true"
+          [tuiTextfieldSize]="'m'"
+          [tuiTextfieldLabelOutside]="true"
+        >
+          <input
+            tuiTextfieldLegacy
+            placeholder="Tìm kiếm theo tên phim"
+          />
+      </tui-input>
+      </div>      
+      <div class="form-action">
+        <button
+          size="m"
+          tuiButton
+          type="button"
+          (click)="handleCreate()"
+        >
+          <tui-icon
+            icon="@tui.plus"
+            [style.height.rem]="1"
+          />
+          {{t('create')}}
+        </button>
+        <button
+          size="m"
+          tuiButton
+          type="button"
+        >
+          <tui-icon
+            icon="@tui.import"
+            [style.height.rem]="1"
+          />
+          {{t('import-file')}}
+        </button>
+        <button
+          size="m"
+          tuiButton
+          type="button"
+        >
+          <tui-icon
+            icon="@tui.folder-input"
+            [style.height.rem]="1"
+          />
+          {{t('export-file')}}
+        </button>
+      </div>
+    </div>
+
+    <div class="grid-container">
+      <ag-grid-angular
+        #agGrid
+        *ngIf="isBrowser"
+        class="ag-theme-alpine grid-table"
+        tooltipTrigger="hover"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [rowData]="rowData"
+        [rowHeight]="50"
+        rowSelection="multiple"
+        [enableCellTextSelection]="true"
+        (selectionChanged)="handleChangOption($event)"
+        (rowDoubleClicked)="handleRowDoubleClicked($event)"
+        rowSelection="multiple"
+      ></ag-grid-angular>
+    </div>
+  </form>
+</section>
+
+
+<app-movie-create
+  [isOpen]="isOpenCreateDialog()"
+  (submitEvent)="handleSaveCreate($event)"
+  (cancelEvent)="closeCreateDialog()"  
+></app-movie-create> -->

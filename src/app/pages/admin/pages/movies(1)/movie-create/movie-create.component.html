@@ -1,0 +1,164 @@
+<!-- <ng-template let-observer [tuiDialogOptions]="{
+  size: 'l',
+  dismissible: false,
+  closeable: true,
+  data: { maxHeight: '90vh', width: '800px' }
+}" [(tuiDialog)]="isOpen" (tuiDialogChange)="handleCancel()">
+  <tui-tabs [(activeItemIndex)]="index" class="tabs">
+    <button tuiTab type="button">Thông tin phim</button>
+    <button tuiTab type="button">Tập phim</button>
+  </tui-tabs>
+
+  <ng-container [ngSwitch]="index">
+    <ng-container *ngSwitchCase="0">
+      <form [formGroup]="form" tuiForm="l" class="form-container" tuiAppearance="flat">
+        <fieldset>
+          <div class="stack">
+            <label tuiLabel>Tên phim</label>
+            <tui-textfield tuiTextfieldSize="m">
+              <input formControlName="name" tuiTextfield />
+            </tui-textfield>
+            <tui-error formControlName="name" class="tui-space-top-none" [error]="[] | tuiFieldError | async" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="stack">
+            <label tuiLabel>Thể loại</label>
+            <tui-textfield tuiChevron [stringify]="stringifyLabelSelect" tuiTextfieldSize="m">
+              <input formControlName="genre" tuiSelect tuiTextfieldSize="m" />
+              <tui-data-list-wrapper *tuiTextfieldDropdown new [items]="persons" />
+            </tui-textfield>
+            <tui-error formControlName="genre" class="tui-space-top-none" [error]="[] | tuiFieldError | async" />
+          </div>
+          <div class="stack">
+            <label tuiLabel>Đạo diễn <span class="required">*</span></label>
+            <tui-textfield tuiChevron [stringify]="stringifyLabelSelect" tuiTextfieldSize="m">
+              <input formControlName="director" tuiSelect />
+              <tui-data-list-wrapper *tuiTextfieldDropdown new [items]="persons" />
+            </tui-textfield>
+            <tui-error formControlName="director" class="tui-space-top-none" [error]="[] | tuiFieldError | async" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="stack">
+            <label tuiLabel>Ngày phát hành</label>
+            <tui-input-date formControlName="releaseDate" [tuiTextfieldLabelOutside]="true" [pattern]="'dd/MM/yyyy'"
+              tuiTextfieldSize="m">
+              <input formControlName="releaseDate" tuiTextfieldLegacy />
+            </tui-input-date>
+            <tui-error formControlName="releaseDate" class="tui-space-top-none" [error]="[] | tuiFieldError | async" />
+          </div>
+          <div class="stack">
+            <label tuiLabel>Tổng số tập</label>
+            <tui-textfield tuiTextfieldSize="m">
+              <input formControlName="totalEpisodes" tuiInputNumber />
+            </tui-textfield>
+            <tui-error formControlName="totalEpisodes" class="tui-space-top-none"
+              [error]="[] | tuiFieldError | async" />
+          </div>
+          <div class="stack">
+            <label tuiLabel>Thời lượng phim (phút)</label>
+            <tui-textfield tuiTextfieldSize="m">
+              <input formControlName="durationMinutes" tuiInputNumber />
+            </tui-textfield>
+            <tui-error formControlName="durationMinutes" class="tui-space-top-none"
+              [error]="[] | tuiFieldError | async" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div>
+            <label tuiLabel>Thumb</label>
+            <label *ngIf="!thumbControl.value" tuiInputFiles>
+              <input accept="image/*" tuiInputFiles [formControl]="thumbControl" />
+            </label>
+
+            <tui-files class="tui-space_top-1">
+              <tui-file *ngIf="thumbControl.value | tuiFileRejected: { accept: 'image/*' } | async as file"
+                state="error" [file]="file" (remove)="removeThumbFile()">
+                File không hợp lệ
+              </tui-file>
+
+              <tui-file
+                *ngIf="thumbControl.value && !(thumbControl.value | tuiFileRejected: { accept: 'image/*' } | async)"
+                [file]="thumbControl.value" (remove)="removeThumbFile()">
+              </tui-file>
+            </tui-files>
+            <tui-error formControlName="thumb" [error]="[] | tuiFieldError | async" />
+          </div>
+        </fieldset>
+      </form>
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <fieldset>
+        <legend>Danh sách tập phim</legend>
+        <div class="stack">
+          <div class="chips">
+            <tui-chip
+              *ngFor="let episode of form.get('episodes')?.value ?? []; let i = index"
+            >
+              {{episode?.episodeNumber ?? ''}}
+              <button tuiIconButton size="s" appearance="flat" icon="tuiIconEdit" (click)="editEpisode(i)"></button>
+              <button tuiIconButton size="s" appearance="flat" icon="tuiIconClose" (click)="removeEpisode(i)"></button>
+            </tui-chip>
+          </div>
+          <button tuiButton appearance="primary" (click)="showDialog(episodeDialogTemplate)" size="m">Thêm tập</button>
+        </div>
+      </fieldset>
+    </ng-container>
+  </ng-container>
+
+  <div class="action-bar tui-space_top-3">
+    <button tuiButton appearance="outline" type="button" (click)="handleCancel()">Hủy</button>
+    <button tuiButton appearance="primary" type="button" [disabled]="form.invalid"
+      (click)="handleSaveDraft()">Lưu</button>
+    <button tuiButton appearance="primary" type="button" [disabled]="form.invalid" (click)="handlerConfirm()">Lưu và gửi
+      duyệt</button>
+  </div>
+
+</ng-template>
+
+<ng-template #episodeDialogTemplate let-observer>
+  <div class="dialog">
+    <form [formGroup]="episodeForm" (ngSubmit)="editMode ? updateEpisode(observer) : addEpisode(observer)">
+      <div class="dialog-content">
+        <h2>{{ editMode ? 'Chỉnh sửa tập phim' : 'Thêm tập phim' }}</h2>
+        <div class="stack">
+          <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+            <label tuiLabel>Số tập</label>
+            <input formControlName="episodeNumber" tuiInputNumber />
+          </tui-textfield>
+          <tui-error formControlName="episodeNumber" [error]="[] | tuiFieldError | async" />
+        </div>
+    
+        <div class="stack">
+          <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+            <label tuiLabel>Tiêu đề</label>
+            <input formControlName="title" tuiTextfield />
+          </tui-textfield>
+          <tui-error formControlName="title" [error]="[] | tuiFieldError | async" />
+        </div>
+    
+        <div class="stack">
+          <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+            <label tuiLabel>Mô tả</label>
+            <textarea formControlName="description" tuiTextfield></textarea>
+          </tui-textfield>
+          <tui-error formControlName="description" [error]="[] | tuiFieldError | async" />
+        </div>
+    
+        <div class="stack">
+          <tui-textfield [tuiTextfieldCleaner]="true" [tuiTextfieldLabelOutside]="true">
+            <label tuiLabel>Nguồn video</label>
+            <input formControlName="sourceUrl" tuiTextfield />
+          </tui-textfield>
+          <tui-error formControlName="sourceUrl" [error]="[] | tuiFieldError | async" />
+        </div>
+    
+        <div class="dialog-footer">
+          <button tuiButton appearance="secondary" (click)="handleCancelEpisode(observer)">Hủy</button>
+          <button tuiButton type="submit" [disabled]="episodeForm.invalid">Lưu</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template> -->

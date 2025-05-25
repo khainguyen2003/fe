@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.top {
+  width: 100%;
+  display: flex;
+}
+
+.bottom {
+  width: 100%;
+  padding-left: 66px;
+  display: flex;
+  gap: 1rem;
+}
+
+.top__left {
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top__right {
+  width: 80%;
+}
+
+.top__right-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.background-avartar-warn {
+  background-color: var(--colors-orange-300);
+  color: aliceblue;
+}
+
+.background-avartar-check {
+  background-color: var(--bidv-primary-inverse);
+  color: aliceblue;
+}
+
+.background-avartar-close {
+  background-color: var(--bidv-error-fill);
+  color: aliceblue;
+}
