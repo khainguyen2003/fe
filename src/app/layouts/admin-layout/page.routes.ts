@@ -18,7 +18,7 @@ export const ADMIN_ROUTES: Routes = [
       },
       {
         path: "movies",
-        loadComponent: () => import('../../pages/customer/pages/movie-list/movie-list.component').then(c => c.MovieListComponent),
+        loadComponent: () => import('../../pages/admin/pages/movies/movie-list/movie-list.component').then(c => c.MovieListComponent),
         title: "Quản lý Phim - MotChill Admin"
       },
       {

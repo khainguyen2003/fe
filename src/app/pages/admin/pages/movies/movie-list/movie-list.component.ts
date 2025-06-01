@@ -150,8 +150,6 @@ export class MovieListComponent implements OnInit {
     // Giả lập dữ liệu thể loại
     this.service.getList(filter).subscribe({
       next: (response) => {
-        debugger
-
         this.rowData = response?.content || [];
         this.rowDataSelected = [];
         this.totalPage = Math.ceil(
@@ -273,7 +271,8 @@ export class MovieListComponent implements OnInit {
     return this.fb.group({
       name: [''],
       genre: [[]],
-      status: ['']
+      movieType: [[]],
+      status: [[]]
     });
   }
 
