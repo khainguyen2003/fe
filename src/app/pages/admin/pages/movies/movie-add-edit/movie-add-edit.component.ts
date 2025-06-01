@@ -186,27 +186,50 @@ export class MovieAddEditComponent implements OnInit {
     const movieData: MovieRequest = {
       ...this.initData,
       ...formData,
-      // Trong thực tế, bạn sẽ xử lý upload ảnh và lấy URL từ API response
-      thumbUrl: this.thumbPreviewUrl ? this.thumbPreviewUrl.toString() : '',
-      posterUrl: this.posterPreviewUrl ? this.posterPreviewUrl.toString() : '',
     };
 
-    // this.service.saveDraft(movieData).subscribe({
-    //   next: (res) => {
-    //     this.alertService.showSuccess(
-    //       {
-    //         header: 'Lưu thành công',
-    //         body: res.message
-    //       });
-    //   },
-    //   error: (err) => {
-    //     this.alertService.showDanger(
-    //       {
-    //         header: 'Lưu thất bại',
-    //         body: err.error?.message
-    //       });
-    //   },
-    // });
+    if (this.initData && this.initData.id) {
+      movieData.id = this.initData.id;
+    }
+
+    
+    // Thêm JSON data
+    formDataToSend.append('movieData', JSON.stringify(movieData));
+    
+    // Thêm files nếu có
+    if (this.thumbImageFile) {
+      formDataToSend.append('thumbImage', this.thumbImageFile, this.thumbImageFile.name);
+    }
+    
+    if (this.posterImageFile) {
+      formDataToSend.append('posterImage', this.posterImageFile, this.posterImageFile.name);
+    }
+
+    this.service.saveDraft(formDataToSend).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.alertService.showSuccess({
+          header: 'Lưu thành công',
+          body: res.message || 'Phim đã được lưu thành công'
+        });
+        this.saved.emit(res.data);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        
+        let errorMessage = 'Đã xảy ra lỗi khi lưu phim';
+        if (err.error && err.error.message) {
+          errorMessage = err.error.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        
+        this.alertService.showDanger({
+          header: 'Lưu thất bại',
+          body: errorMessage
+        });
+      }
+    });
   }
 
   onCancel(): void {

@@ -33,6 +33,7 @@ export interface MovieFilter extends CommonFilterField {
 
 
 export interface MovieRequest {
+  id?: number | null;
   name: string;
   originalName?: string;
   slug?: string;
