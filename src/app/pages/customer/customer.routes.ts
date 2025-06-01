@@ -10,11 +10,11 @@ export const CUSTOMER_ROUTES: Routes = [
         loadComponent: () => import('./pages/home/home.component').then(c => c.HomeComponent),
       },
       {
-        path: 'movies',
+        path: 'phim',
         loadComponent: () => import('./pages/movie-list/movie-list.component').then(c => c.MovieListComponent)
       },
       {
-        path: 'movie/:id',
+        path: 'phim/:slug',
         loadComponent: () => import('./pages/details/details.component').then(c => c.DetailsComponent)
       },
       // {

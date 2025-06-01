@@ -45,8 +45,12 @@ export class DetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.slug);
+    
     if(this.slug) {
       this.#movieService.getMovieBySlug(this.slug).subscribe((res) => {
+        console.log(res);
+        
         this.movie = res?.movie;
         this.movieNation = this.movie.category;
         this.moviePractice = this.movie?.episodes[0].items.map((item: any) => ({

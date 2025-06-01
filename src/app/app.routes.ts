@@ -14,8 +14,8 @@ export const routes: Routes = [
   },
   
   // Xử lý route không tồn tại
-  {
-    path: '**',
-    redirectTo: '/admin/dashboard'
-  }
+  // {
+  //   path: '**',
+  //   redirectTo: '/admin/dashboard'
+  // }
 ];
