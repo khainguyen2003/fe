@@ -1,7 +1,12 @@
 <div class="app_main">
-  <div class="main__screen-container">
+  <!-- <div class="main__screen-container">
     <video #videoPlayer controls width="100%" height="auto"></video>
+  </div> -->
+
+  <div class="main__screen-container">
+    <iframe [src]="movieEmbed" frameborder="0"></iframe>
   </div>
+
 
   <div class="main__description-container">
     <div class="img-box">

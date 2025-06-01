@@ -6,6 +6,7 @@ import { MovieService } from '../../services/movies/movie.service';
 import { HttpClient } from '@angular/common/http';
 import Hls from 'hls.js';
 import { HlsPlayerComponent } from "../../../../shared/components/player/hls-player.component";
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-details',
@@ -22,7 +23,7 @@ export class DetailsComponent implements OnInit {
 
   movie: any;
   moviePractice: any = null;
-  movieEmbed: any = null;
+  movieEmbed: SafeResourceUrl | null = null;
   movieNation: any = null;
 
   slug: string = '';
@@ -37,7 +38,8 @@ export class DetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private sanitizer: DomSanitizer
   ) {
     this.route.paramMap.subscribe(params => {
       this.slug = params.get('slug') || '';
@@ -57,11 +59,14 @@ export class DetailsComponent implements OnInit {
           ...item,
           isEpisode: item.slug.startsWith('tap-') // Kiểm tra slug để xác định là tập phim hay không
         }));
-        
-        // Tự động chọn tập đầu tiên nếu có
-        if(this.moviePractice?.length > 0 && this.moviePractice[0].id) {
-          this.playEpisode(this.moviePractice[0].id);
+
+        if(this.moviePractice?.length > 0) {
+          debugger
+          this.movieEmbed = this.sanitizer.bypassSecurityTrustResourceUrl(this.moviePractice[0].embed);
+        } else {
+          this.movieEmbed = null;
         }
+        
       });
 
       this.searchPhimBo();
