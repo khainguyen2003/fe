@@ -4,8 +4,7 @@ export const routes: Routes = [
   // Trang chủ
   {
     path: '',
-    redirectTo: '/admin/dashboard',
-    pathMatch: 'full'
+    loadChildren: () => import('./pages/customer/customer.routes').then(m => m.CUSTOMER_ROUTES)
   },
   
   // Phần Admin

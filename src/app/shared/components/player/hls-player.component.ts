@@ -1,11 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Output, EventEmitter, HostListener, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { throwError, fromEvent, Observable, merge } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
-import { get } from 'lodash';
 import { Platform } from '@angular/cdk/platform';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { fromEvent, Subscription, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 // Khai báo các biến toàn cục từ các thư viện đã nạp qua angular.json
 // eslint-disable-next-line no-var
