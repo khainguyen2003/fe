@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     RouterLink
   ],
+  standalone: true,
   templateUrl: './genre-movie-list.component.html',
   styleUrl: './genre-movie-list.component.scss'
 })

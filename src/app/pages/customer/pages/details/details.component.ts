@@ -13,7 +13,7 @@ import { HlsPlayerComponent } from "../../../../shared/components/player/hls-pla
     CommonModule,
     RouterLink,
     HlsPlayerComponent
-],
+],standalone: true,
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })

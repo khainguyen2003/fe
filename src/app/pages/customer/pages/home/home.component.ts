@@ -8,6 +8,7 @@ import { MovieService } from '../../services/movies/movie.service';
 @Component({
   selector: 'app-home',
   imports: [GenreMovieListComponent],
+  standalone: true,
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

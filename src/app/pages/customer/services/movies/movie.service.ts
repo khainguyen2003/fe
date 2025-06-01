@@ -38,11 +38,11 @@ export class MovieService {
     return this.http.post<any>(MovieUrlApi.GET_ALL_ACTIVE, params);
   }
 
-  saveDraft(data: MovieRequest): Observable<any> {
+  saveDraft(data: FormData): Observable<any> {
     return this.http.post<any>(MovieUrlApi.SAVE_DRAFT, data);
   }
 
-  updateDraft(id: number,  data: MovieRequest): Observable<any> {
+  updateDraft(id: number, data: FormData): Observable<any> {
     return this.http.post<any>(MovieUrlApi.UPDATE_DRAFT + "/" + id, data);
   }
 

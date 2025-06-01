@@ -6,6 +6,7 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
   imports: [
     CommonModule
   ],
+  standalone: true,
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })

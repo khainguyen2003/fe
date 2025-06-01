@@ -180,6 +180,8 @@ export class MovieAddEditComponent implements OnInit {
     // Lấy dữ liệu từ form
     const formData = this.movieForm.value;
 
+    const formDataToSend = new FormData();
+
     // Chuẩn bị dữ liệu để gửi đi
     const movieData: MovieRequest = {
       ...this.initData,
@@ -189,22 +191,22 @@ export class MovieAddEditComponent implements OnInit {
       posterUrl: this.posterPreviewUrl ? this.posterPreviewUrl.toString() : '',
     };
 
-    this.service.saveDraft(movieData).subscribe({
-      next: (res) => {
-        this.alertService.showSuccess(
-          {
-            header: 'Lưu thành công',
-            body: res.message
-          });
-      },
-      error: (err) => {
-        this.alertService.showDanger(
-          {
-            header: 'Lưu thất bại',
-            body: err.error?.message
-          });
-      },
-    });
+    // this.service.saveDraft(movieData).subscribe({
+    //   next: (res) => {
+    //     this.alertService.showSuccess(
+    //       {
+    //         header: 'Lưu thành công',
+    //         body: res.message
+    //       });
+    //   },
+    //   error: (err) => {
+    //     this.alertService.showDanger(
+    //       {
+    //         header: 'Lưu thất bại',
+    //         body: err.error?.message
+    //       });
+    //   },
+    // });
   }
 
   onCancel(): void {
