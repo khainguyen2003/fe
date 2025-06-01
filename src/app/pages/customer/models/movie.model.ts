@@ -16,11 +16,12 @@ export interface Movie {
   language: string;
   director: string;
   casts: string;
+  genre: string;
   
 }
 
 export interface MovieFilter extends CommonFilterField {
-  genreIds?: number[] | null;
+  genre?: string | null;
   search?: string | null;
   episode_number?: number | null;
   type?: number[] | null;

@@ -25,12 +25,6 @@
       const filter: GenreFilter = {
         id: object?.id ? convertObjectArrayToValueString(object.id) : null,
         search: object?.search ?? null,
-        isActive: object?.isActive
-          ? convertObjectArrayToValueString(object.isActive)
-          : null,
-        status: object?.status
-          ? convertObjectArrayToValueString(object.status)
-          : null,
         page: object?.pagination?.currentPage,
         limit: object?.pagination?.itemPerpage,
         sort: 'id,desc',
@@ -42,7 +36,7 @@
       return this.http.get<any>(GenreUrlApi.GET_BY_ID + "/" + id);
     }
 
-    getGenreOnSelect(params: any) {
+    getGenreOnSelect(params: any): Observable<any> {
       return this.http.post<any>(GenreUrlApi.GET_ALL_ACTIVE, params);
     }
 

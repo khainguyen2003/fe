@@ -1,16 +1,18 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { NgbDropdownModule, NgbModalRef, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { CommonModule } from '@angular/common';
-import { Movie } from '../../../../customer/models/movie.model';
-import { Genre } from '../../../models/genre.model';
-import { GenreService } from '../../../services/genres/genre.service';
+import { NgbDropdownModule, NgbModal, NgbModalRef, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../../../../../shared/components/alert/alert.service';
+import { ActionType, MOVIE_STATUS, MOVIE_TYPES } from '../../../../../shared/constants/constants';
+import { ACTION_TYPE_ENUM, ADD_EDIT_TYPE_ENUM, SCREEN_PAGE_ENUM, SCREEN_TYPE_ENUM } from '../../../../../shared/enums/common.enums';
+import { MOVIE_STATUS_ENUM } from '../../../../../shared/enums/param.enums';
+import { MovieUtils } from '../../../../../shared/utils/functions/param.utils';
 import { MovieService } from '../../../../customer/services/movies/movie.service';
 import { BreadcrumbItem, Option, Pagable } from '../../../models/common.model';
-import { ACTION_TYPE_ENUM, ADD_EDIT_TYPE_ENUM, SCREEN_PAGE_ENUM, SCREEN_TYPE_ENUM } from '../../../../../shared/enums/common.enums';
-import { ActionType } from '../../../../../shared/constants/constants';
+import { GenreService } from '../../../services/genres/genre.service';
+import { MovieAddEditComponent } from '../movie-add-edit/movie-add-edit.component';
+import { Movie } from '../../../models/movie.model';
 
 @Component({
   selector: 'app-movie-list',
@@ -21,7 +23,8 @@ import { ActionType } from '../../../../../shared/constants/constants';
     FormsModule,
     NgbPaginationModule,
     NgbDropdownModule,
-    RouterModule
+    RouterModule,
+    MovieAddEditComponent
   ],
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss']
@@ -30,6 +33,9 @@ export class MovieListComponent implements OnInit {
   private readonly service = inject(MovieService);
   private readonly genreService = inject(GenreService);
   private readonly alertService = inject(AlertService);
+  private readonly modalService = inject(NgbModal);
+
+  @ViewChild('movieModal') movieModal: any;
 
   // Thuộc tính form và dữ liệu
   formSearch: FormGroup  = new FormGroup({});
@@ -49,7 +55,7 @@ export class MovieListComponent implements OnInit {
       routerLink: `${SCREEN_PAGE_ENUM.HOME_PAGE}`,
     },
     {
-      caption: 'Quản lý danh mục',
+      caption: 'Quản lý phim',
       routerLinkActiveOptions: { exact: true },
       routerLink: `${SCREEN_TYPE_ENUM.LIST}`,
     },
@@ -59,12 +65,18 @@ export class MovieListComponent implements OnInit {
       ADD_EDIT_TYPE_ENUM.CREATE;
   protected itemPages: Array<{ value: number; label: string }> = [];
 
+  movieStatus = MOVIE_STATUS_ENUM;
 
-  rowData: Genre[] = [];
-  rowDataSelected: Genre[] = [];
+  getMovieStatusLabel(value: string | number): string {
+    return MovieUtils.getMovieStatusLabel(value);
+  }
+
+
+  rowData: Movie[] = [];
+  rowDataSelected: Movie[] = [];
   dataDialog: number[] = [];
 
-  dataDetail: Genre | null = null;
+  dataDetail: Movie | null = null;
   typeDetail: ActionType | null = null;
   isOpenDetailDialog = false;
 
@@ -74,7 +86,6 @@ export class MovieListComponent implements OnInit {
   isOpenRejectDialog = false;
   dataReject: number[] = [];
 
-  data: Movie[] = [];
   showList: boolean = true;
 
   // Modal reference
@@ -92,6 +103,8 @@ export class MovieListComponent implements OnInit {
   
   // Danh sách thể loại
   genreDropdown: Option[] = [];
+  movieTypeDropdown: Option[] = MOVIE_TYPES;
+  movieStatusDropdown: Option[] = MOVIE_STATUS;
 
   addEditForm = new FormGroup({
 
@@ -119,18 +132,10 @@ export class MovieListComponent implements OnInit {
       pagination: this.pagination,
     });
 
+    this.fetchMovies();
+
     // Khởi tạo dữ liệu mẫu cho thể loại
-    this.genreDropdown = [
-      { value: 'action', label: 'Hành động' },
-      { value: 'comedy', label: 'Hài hước' },
-      { value: 'drama', label: 'Chính kịch' },
-      { value: 'horror', label: 'Kinh dị' },
-      { value: 'romance', label: 'Tình cảm' },
-      { value: 'fantasy', label: 'Viễn tưởng' },
-      { value: 'sci-fi', label: 'Khoa học viễn tưởng' }
-    ];
-    
-    this.totalItems = this.data.length;
+    this.fetchGenre();
   }
 
   fetchMovies() {
@@ -154,13 +159,104 @@ export class MovieListComponent implements OnInit {
         );
       },
       error: (err) => {
-        console.error('Lỗi khi tải danh sách thể loại:', err);
+        console.error('Lỗi khi tải danh sách phim:', err);
         this.rowData = [];
       },
     });
+  }
 
-    this.totalGenres = this.genres.length;
-    this.applyFilter();
+  handleSearch() {
+    this.pagination.currentPage = 0;
+    this.dataFormSearch.set({
+      ...this.formSearch.getRawValue(),
+      pagination: this.pagination,
+    });
+    this.fetchMovies();
+  }
+
+  handlePageChange(event: number) {
+    this.rowDataSelected = [];
+    this.pagination.currentPage = event;
+
+    this.getData({
+      ...this.dataFormSearch,
+      pagination: this.pagination,
+    });
+  }
+
+  handleSearchPage() {
+    const page = this.formSearch.getRawValue().searchPage;
+    if (!page) {
+      return;
+    }
+    if (page > this.totalPage || page < 1) {
+      //thông báo lỗi
+    } else {
+      this.pagination.currentPage = page - 1;
+      this.getData({
+        ...this.dataFormSearch,
+        pagination: this.pagination,
+      });
+      this.rowDataSelected = [];
+    }
+  }
+
+  clearForm() {
+    this.formSearch = this.createFormSearch();
+    this.page = 1;
+  }
+
+  selectLimitOnPage(page: number) {
+    this.rowDataSelected = [];
+    this.pagination.currentPage = 0;
+    this.pagination.itemPerpage = page;
+    this.getData({
+      ...this.dataFormSearch,
+      pagination: this.pagination,
+    });
+  }
+
+  protected get checked(): boolean | null {
+    const every = this.rowData.every(({ selected }) => selected);
+    const some = this.rowData.some(({ selected }) => selected);
+
+    return every || (some && null);
+  }
+
+  private collectData(): Movie[] {
+    return this.rowData.filter(item => item.selected);
+  }
+
+  protected onCheck(checked: boolean): void {
+    this.rowData.forEach((item) => {
+      item.selected = checked;
+    });
+
+    this.rowDataSelected = this.rowData;
+  }
+
+  onStatusChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValues = Array.from(selectElement.selectedOptions).map(
+      (option) => Number(option.value) // hoặc giữ nguyên nếu bạn dùng string
+    );
+    this.formSearch.get('status')?.setValue(selectedValues);
+  }
+
+  onGenreChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValues = Array.from(selectElement.selectedOptions).map(
+      (option) => Number(option.value) // hoặc giữ nguyên nếu bạn dùng string
+    );
+    this.formSearch.get('status')?.setValue(selectedValues);
+  }
+
+  onMovieTypeChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValues = Array.from(selectElement.selectedOptions).map(
+      (option) => Number(option.value) // hoặc giữ nguyên nếu bạn dùng string
+    );
+    this.formSearch.get('status')?.setValue(selectedValues);
   }
 
   fetchGenre() {
@@ -181,60 +277,13 @@ export class MovieListComponent implements OnInit {
     });
   }
 
-  handleCreate(): void {
-    this.router.navigate(['../create'], { relativeTo: this.route });
-  }
-
-  searchMovies(): void {
-    // Logic tìm kiếm sẽ được thực hiện ở đây
-    console.log('Tìm kiếm với:', this.formSearch.value);
-    // Mock lại dữ liệu tìm kiếm để demo
-    const searchTerm = this.formSearch.get('name')?.value?.toLowerCase();
-    const statusFilter = this.formSearch.get('status')?.value;
-    
-    if (searchTerm || statusFilter) {
-      this.data = this.data.filter(movie => {
-        let matchName = true;
-        let matchStatus = true;
-        
-        if (searchTerm) {
-          matchName = movie.name.toLowerCase().includes(searchTerm);
-        }
-        
-        if (statusFilter) {
-          matchStatus = movie.status === statusFilter;
-        }
-        
-        return matchName && matchStatus;
-      });
-    } else {
-      this.loadSampleData();
-    }
-    
-    this.totalItems = this.data.length;
-    this.page = 1;
-  }
-
-  resetFormSearch(): void {
-    this.formSearch.reset({ name: '', genre: [], status: '' });
-    this.loadSampleData();
-    this.totalItems = this.data.length;
-    this.page = 1;
-  }
-
-  onUpdateMovie(item: MovieItem): void {
-    this.router.navigate(['../edit', item.id], { relativeTo: this.route });
-  }
-
-  onEpisodeMovie(item: MovieItem): void {
+  onEpisodeMovie(item: Movie): void {
     this.router.navigate(['../episodes', item.id], { relativeTo: this.route });
   }
 
-  onDeleteMovie(item: MovieItem): void {
+  onDeleteMovie(item: Movie): void {
     if (confirm(`Bạn có chắc chắn muốn xóa phim "${item.name}"?`)) {
-      // Mock xóa phim
-      this.data = this.data.filter(movie => movie.id !== item.id);
-      this.totalItems = this.data.length;
+      
       alert('Đã xóa phim thành công!');
     }
   }
@@ -289,36 +338,46 @@ export class MovieListComponent implements OnInit {
     return pages;
   }
 
-  openGenreModal(content: any, genre?: Genre): void {
-    this.isEditMode = !!genre;
-    this.currentGenre = genre || null;
-
-    if (this.isEditMode && genre) {
-      this.genreForm.patchValue({
-        name: genre.name,
-        slug: genre.slug,
-        description: genre.description,
-        status: genre.status
-      });
-    } else {
-      this.genreForm.reset({
-        name: '',
-        slug: '',
-        description: '',
-        status: 'active'
-      });
-    }
-
-    // Lắng nghe sự kiện thay đổi tên để tạo slug
-    this.genreForm.get('name')?.valueChanges.subscribe(name => {
-      if (!this.isEditMode || !this.genreForm.get('slug')?.dirty) {
-        this.genreForm.get('slug')?.setValue(this.generateSlug(name));
-      }
-    });
-
+  openMovieModal(content: any, movie?: Movie): void {
+    this.isEditMode = !!movie;
+    this.initData = movie || null;
+  
     this.modalRef = this.modalService.open(content, {
+      size: 'lg',
       backdrop: 'static',
-      centered: true
+      centered: true,
+      scrollable: true
     });
+  }
+  
+  // Đóng modal
+  closeModal(): void {
+    if (this.modalRef) {
+      this.modalRef.close();
+    }
+  }
+  
+  // Xử lý sự kiện lưu phim từ component con
+  onMovieSaved(movie: Movie): void {
+    this.fetchMovies(); // Làm mới danh sách
+    this.closeModal();
+    this.alertService.showSuccess({header: `Phim đã được ${this.isEditMode ? 'cập nhật' : 'thêm mới'} thành công!`, body: ''});
+  }
+  
+  // Xử lý sự kiện hủy từ component con
+  onCancelled(): void {
+    this.closeModal();
+  }
+  
+  // Sửa phương thức handleCreate để mở modal thay vì chuyển trang
+  handleCreate(): void {
+    // Mở modal thêm phim mới thay vì chuyển trang
+    this.openMovieModal(this.movieModal);
+  }
+  
+  // Sửa phương thức onUpdateMovie để mở modal thay vì chuyển trang
+  onUpdateMovie(item: Movie): void {
+    // Mở modal sửa phim thay vì chuyển trang
+    this.openMovieModal(this.movieModal, item);
   }
 }

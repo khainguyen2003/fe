@@ -78,9 +78,6 @@ export interface PageFilter {
   }
   
   export interface CommonFilterField {
-    status?: string | null;
-    isActive?: string | null;
-    isDisplay?: string | null;
     newData?: string | null;
     effectiveDate?: string | null;
     endEffectiveDate?: string | null;
@@ -155,4 +152,13 @@ export interface PageFilter {
     template?: TemplateRef<any>;
     classname?: string;
 	delay?: number;
+  }
+
+  export interface BaseModel {
+    id: number;
+    createdBy?: string;
+    modifiedBy?: string;
+    createdDate?: Date;
+    modifiedDate?: Date;
+    selected?: boolean;
   }

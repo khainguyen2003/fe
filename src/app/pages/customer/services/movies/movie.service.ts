@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MovieUrlApi } from '../../../../shared/utils/api/admin-url-api/movie.api';
-import { toLongArray } from '../../../../shared/utils/functions/array-utils';
+import { convertArrayToString, toLongArray } from '../../../../shared/utils/functions/array-utils';
+import { MovieRequest } from '../../../admin/models/movie.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +38,12 @@ export class MovieService {
     return this.http.post<any>(MovieUrlApi.GET_ALL_ACTIVE, params);
   }
 
-  saveDraft(data: GenreUpdate): Observable<any> {
+  saveDraft(data: MovieRequest): Observable<any> {
     return this.http.post<any>(MovieUrlApi.SAVE_DRAFT, data);
+  }
+
+  updateDraft(id: number,  data: MovieRequest): Observable<any> {
+    return this.http.post<any>(MovieUrlApi.UPDATE_DRAFT + "/" + id, data);
   }
 
   delete(ids: number[]): Observable<any> {

@@ -1,0 +1,10 @@
+export enum MOVIE_STATUS_ENUM {
+    SAVE_DRAFT = 1,
+    WAIT_APPROVE = 2,
+    APPROVED = 3,
+    CANCEL_APPROVED = 4,
+    REJECTED = 5,
+    PUBLISHED = 6,
+    UNPUBLISHED = 7,
+    ARCHIVED = 8
+  }

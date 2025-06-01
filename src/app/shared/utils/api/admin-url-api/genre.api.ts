@@ -8,7 +8,7 @@ export class GenreUrlApi {
   public static readonly DOWNLOAD_TEMPLATE =
   CommonUrlApi.ADMIN_SERVICE_MODULE.GENRE.concat('/download-template');
   public static readonly GET_ALL_ACTIVE =
-  CommonUrlApi.ADMIN_SERVICE_MODULE.GENRE.concat('/get-genre-options');
+  CommonUrlApi.ADMIN_SERVICE_MODULE.GENRE.concat('/options');
   public static readonly GET_ALL_GENRE_NAME_ACTIVE =
   CommonUrlApi.ADMIN_SERVICE_MODULE.GENRE.concat('/get-genre-name-options');
   public static readonly GET_SERTYPE =
