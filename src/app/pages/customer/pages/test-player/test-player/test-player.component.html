@@ -1,0 +1,17 @@
+<div class="player-container">
+  <div *ngIf="loading" class="loading">
+    Đang tải video...
+  </div>
+  
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+  
+  <app-hls-player 
+    *ngIf="videoUrl && !loading && !error"
+    [src]="videoUrl"
+    [width]="'800'"
+    [height]="'450'"
+    [autoplay]="true">
+  </app-hls-player>
+</div>

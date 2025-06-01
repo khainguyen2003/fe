@@ -1,0 +1,276 @@
+<div class="container-fluid">
+  <!-- Tiêu đề trang -->
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="fw-bold mb-1">Quản lý đạo diễn</h2>
+          <p class="text-muted mb-0">Thêm, sửa, xóa đạo diễn trong hệ thống</p>
+        </div>
+        <div>
+          <button 
+            class="btn btn-success" 
+            (click)="openDirectorModal(directorModalContent)">
+            <i class="fas fa-plus-circle me-1"></i> Thêm đạo diễn
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bộ lọc -->
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Tìm kiếm đạo diễn..." 
+              [(ngModel)]="searchTerm"
+              (keyup.enter)="applyFilter()">
+            <button 
+              class="btn btn-primary" 
+              type="button" 
+              (click)="applyFilter()">
+              <i class="fas fa-search me-1"></i> Tìm kiếm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sách đạo diễn -->
+  <div class="card mt-4">
+    <div class="card-body">
+      <h5 class="card-title">Danh sách đạo diễn</h5>
+      
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading" class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Đang tải dữ liệu...</p>
+      </div>
+      
+      <!-- Bảng dữ liệu -->
+      <div *ngIf="!isLoading" class="table-responsive">
+        <!-- Hiển thị thông báo khi không có dữ liệu -->
+        <div *ngIf="directors.length === 0" class="text-center my-5">
+          <i class="fas fa-film fa-3x text-muted mb-3"></i>
+          <p class="lead">Không tìm thấy đạo diễn nào</p>
+          <p class="text-muted">Thử thay đổi bộ lọc hoặc thêm mới đạo diễn</p>
+        </div>
+        
+        <table *ngIf="directors.length > 0" class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 70px;">#</th>
+              <th style="width: 250px;">Tên đạo diễn</th>
+              <th>Thông tin cá nhân</th>
+              <th style="width: 120px;">Số phim</th>
+              <th style="width: 130px;">Trạng thái</th>
+              <th style="width: 150px;">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let director of directors; let i = index">
+              <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar-wrapper me-2">
+                    <img [src]="director.avatar" class="avatar" [alt]="director.name">
+                  </div>
+                  <div>
+                    <div class="fw-bold">{{ director.name }}</div>
+                    <small class="text-muted">{{ director.createdAt | date:'dd/MM/yyyy' }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div *ngIf="director.birthDate">
+                  <small><i class="fas fa-birthday-cake text-muted me-1"></i> {{ director.birthDate | date:'dd/MM/yyyy' }}</small>
+                </div>
+                <div *ngIf="director.birthPlace">
+                  <small><i class="fas fa-map-marker-alt text-muted me-1"></i> {{ director.birthPlace }}</small>
+                </div>
+                <div *ngIf="director.biography" class="biography-preview mt-1">
+                  {{ truncateBiography(director.biography) }}
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-info">{{ director.movieCount }} phim</span>
+              </td>
+              <td>
+                <div class="form-check form-switch">
+                  <input 
+                    class="form-check-input" 
+                    type="checkbox" 
+                    [id]="'status-' + director.id" 
+                    [checked]="director.status === 'active'" 
+                    (change)="toggleStatus(director)">
+                  <label 
+                    class="form-check-label" 
+                    [for]="'status-' + director.id" 
+                    [class.text-success]="director.status === 'active'" 
+                    [class.text-danger]="director.status === 'inactive'">
+                    {{ director.status === 'active' ? 'Hoạt động' : 'Vô hiệu' }}
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex gap-2">
+                  <button 
+                    class="btn btn-sm btn-primary" 
+                    (click)="openDirectorModal(directorModalContent, director)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button 
+                    class="btn btn-sm btn-danger" 
+                    (click)="deleteDirector(director)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Phân trang -->
+      <div *ngIf="totalDirectors > pageSize" class="d-flex justify-content-center mt-4">
+        <ngb-pagination
+          [collectionSize]="totalDirectors"
+          [(page)]="page"
+          [pageSize]="pageSize"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="handlePageChange($event)">
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal thêm/sửa đạo diễn -->
+  <ng-template #directorModalContent let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">{{ isEditMode ? 'Chỉnh sửa đạo diễn' : 'Thêm đạo diễn mới' }}</h5>
+      <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="directorForm">
+        <div class="row">
+          <!-- Cột trái - Thông tin cơ bản -->
+          <div class="col-md-7">
+            <div class="mb-3">
+              <label for="name" class="form-label">Tên đạo diễn <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="name" 
+                formControlName="name" 
+                [class.is-invalid]="directorForm.controls['name'].invalid && directorForm.controls['name'].touched">
+              <div *ngIf="directorForm.controls['name'].invalid && directorForm.controls['name'].touched" class="invalid-feedback">
+                <div *ngIf="directorForm.controls['name'].errors?.['required']">Vui lòng nhập tên đạo diễn</div>
+                <div *ngIf="directorForm.controls['name'].errors?.['minlength']">Tên đạo diễn phải có ít nhất 2 ký tự</div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="birthDate" class="form-label">Ngày sinh</label>
+              <input 
+                type="date" 
+                class="form-control" 
+                id="birthDate" 
+                formControlName="birthDate">
+            </div>
+            
+            <div class="mb-3">
+              <label for="birthPlace" class="form-label">Nơi sinh</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="birthPlace" 
+                formControlName="birthPlace">
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label d-block">Trạng thái <span class="text-danger">*</span></label>
+              <div class="form-check form-check-inline">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  id="statusActive" 
+                  value="active" 
+                  formControlName="status">
+                <label class="form-check-label text-success" for="statusActive">Hoạt động</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  id="statusInactive" 
+                  value="inactive" 
+                  formControlName="status">
+                <label class="form-check-label text-danger" for="statusInactive">Vô hiệu</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Cột phải - Hình ảnh và tiểu sử -->
+          <div class="col-md-5">
+            <div class="mb-3">
+              <label for="avatar" class="form-label">Hình ảnh</label>
+              <div class="avatar-upload">
+                <div class="avatar-preview mb-2">
+                  <img 
+                    [src]="selectedAvatarFile ? 'assets/img/directors/new-avatar.jpg' : (currentDirector?.avatar || 'assets/img/directors/default-avatar.jpg')" 
+                    alt="Avatar Preview" 
+                    class="img-fluid">
+                </div>
+                <input 
+                  type="file" 
+                  class="form-control" 
+                  id="avatar" 
+                  accept="image/*" 
+                  (change)="onAvatarFileSelected($event)">
+                <small class="text-muted">Chọn file hình ảnh với định dạng JPG, PNG hoặc JPEG</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tiểu sử -->
+        <div class="mb-3">
+          <label for="biography" class="form-label">Tiểu sử</label>
+          <textarea 
+            class="form-control" 
+            id="biography" 
+            formControlName="biography" 
+            rows="5"></textarea>
+        </div>
+      </form>
+      
+      <!-- Loading indicator trong modal -->
+      <div *ngIf="isLoading" class="text-center my-3">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="ms-2">Đang xử lý...</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Hủy bỏ</button>
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="saveDirector()" 
+        [disabled]="directorForm.invalid || isLoading">
+        {{ isEditMode ? 'Cập nhật' : 'Thêm mới' }}
+      </button>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,233 @@
+<div class="container-fluid">
+    <!-- Tiêu đề trang -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-1">Quản lý diễn viên</h2>
+                    <p class="text-muted mb-0">Thêm, sửa, xóa diễn viên trong hệ thống</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" (click)="openActorModal(actorModal)">
+                        <i class="bi bi-plus-lg me-1"></i> Thêm diễn viên mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0"
+                                    placeholder="Tìm kiếm diễn viên..." [(ngModel)]="searchTerm"
+                                    (ngModelChange)="applyFilter()">
+                                <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button"
+                                    (click)="searchTerm = ''; applyFilter()">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách diễn viên -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Danh sách diễn viên</h5>
+                        <span class="badge bg-primary">{{totalActors}} diễn viên</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4">Diễn viên</th>
+                                    <th scope="col">Năm sinh</th>
+                                    <th scope="col">Nơi sinh</th>
+                                    <th scope="col">Tiểu sử</th>
+                                    <th scope="col">Số phim</th>
+                                    <th scope="col">Trạng thái</th>
+                                    <th scope="col" class="text-end pe-4">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let actor of paginatedActors">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="actor-avatar me-3">
+                                                <img [src]="actor.avatar" alt="{{actor.name}}"
+                                                    class="img-fluid rounded">
+                                            </div>
+                                            <span class="fw-medium">{{actor.name}}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="actor.birthDate">{{actor.birthDate | date:'dd/MM/yyyy'}}</span>
+                                        <span *ngIf="!actor.birthDate" class="text-muted">--</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="actor.birthPlace">{{actor.birthPlace}}</span>
+                                        <span *ngIf="!actor.birthPlace" class="text-muted">--</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="actor.biography"
+                                            class="biography-text">{{truncateBiography(actor.biography)}}</span>
+                                        <span *ngIf="!actor.biography" class="text-muted">--</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">{{actor.movieCount}} phim</span>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                [checked]="actor.status === 'active'" (change)="toggleStatus(actor)">
+                                            <span
+                                                [ngClass]="{'text-success': actor.status === 'active', 'text-secondary': actor.status === 'inactive'}">
+                                                {{actor.status === 'active' ? 'Kích hoạt' : 'Vô hiệu'}}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-sm btn-outline-primary me-1"
+                                            (click)="openActorModal(actorModal, actor)">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" (click)="deleteActor(actor)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Không có dữ liệu -->
+                <div class="card-body text-center py-5" *ngIf="filteredActors.length === 0">
+                    <div class="py-4">
+                        <i class="bi bi-person-badge text-muted display-4 d-block mb-3"></i>
+                        <h5 class="text-muted">Không có diễn viên nào</h5>
+                        <p class="text-muted mb-4">Không tìm thấy diễn viên nào phù hợp với tìm kiếm của bạn.</p>
+                        <button class="btn btn-primary" (click)="openActorModal(actorModal)">
+                            <i class="bi bi-plus-lg me-1"></i> Thêm diễn viên mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Phân trang -->
+                <div class="card-footer bg-transparent d-flex justify-content-center" *ngIf="filteredActors.length > 0">
+                    <ngb-pagination [collectionSize]="totalActors" [(page)]="page" [pageSize]="pageSize" [maxSize]="5"
+                        [rotate]="true" [boundaryLinks]="true" aria-label="Default pagination">
+                    </ngb-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm/Sửa diễn viên -->
+<ng-template #actorModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Chỉnh sửa diễn viên' : 'Thêm diễn viên mới' }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="actorForm">
+            <div class="row">
+                <div class="col-md-4">
+                    <!-- Avatar -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label d-block">Ảnh đại diện</label>
+                        <div class="avatar-preview mb-2">
+                            <img [src]="selectedAvatarFile ? 'assets/img/actors/avatar-preview.jpg' : (currentActor?.avatar || 'assets/img/actors/default-avatar.jpg')"
+                                alt="Avatar preview" class="img-fluid rounded">
+                        </div>
+                        <div class="d-grid">
+                            <label class="btn btn-outline-primary" for="actorAvatar">
+                                <i class="bi bi-upload me-1"></i> Tải lên ảnh
+                            </label>
+                            <input type="file" id="actorAvatar" class="d-none" accept="image/*"
+                                (change)="onAvatarFileSelected($event)">
+                            <small class="form-text text-muted mt-1">
+                                Định dạng hỗ trợ: JPG, PNG, GIF. Tối đa 2MB.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <!-- Tên diễn viên -->
+                    <div class="mb-3">
+                        <label for="actorName" class="form-label">Tên diễn viên <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="actorName" formControlName="name"
+                            placeholder="Nhập tên diễn viên"
+                            [ngClass]="{'is-invalid': actorForm.get('name')?.invalid && actorForm.get('name')?.touched}">
+                        <div class="invalid-feedback" *ngIf="actorForm.get('name')?.errors?.['required']">
+                            Vui lòng nhập tên diễn viên.
+                        </div>
+                        <div class="invalid-feedback" *ngIf="actorForm.get('name')?.errors?.['minlength']">
+                            Tên diễn viên phải có ít nhất 2 ký tự.
+                        </div>
+                    </div>
+
+                    <!-- Ngày sinh -->
+                    <div class="mb-3">
+                        <label for="actorBirthDate" class="form-label">Ngày sinh</label>
+                        <input type="date" class="form-control" id="actorBirthDate" formControlName="birthDate">
+                    </div>
+
+                    <!-- Nơi sinh -->
+                    <div class="mb-3">
+                        <label for="actorBirthPlace" class="form-label">Nơi sinh</label>
+                        <input type="text" class="form-control" id="actorBirthPlace" formControlName="birthPlace"
+                            placeholder="Nhập nơi sinh">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tiểu sử -->
+            <div class="mb-3">
+                <label for="actorBiography" class="form-label">Tiểu sử</label>
+                <textarea class="form-control" id="actorBiography" rows="4" formControlName="biography"
+                    placeholder="Nhập tiểu sử diễn viên"></textarea>
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="mb-3">
+                <label class="form-label d-block">Trạng thái</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="statusActive" formControlName="status"
+                        value="active">
+                    <label class="form-check-label" for="statusActive">Kích hoạt</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="statusInactive" formControlName="status"
+                        value="inactive">
+                    <label class="form-check-label" for="statusInactive">Vô hiệu</label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Hủy</button>
+        <button type="button" class="btn btn-primary" [disabled]="actorForm.invalid" (click)="saveActor()">
+            {{ isEditMode ? 'Cập nhật' : 'Thêm mới' }}
+        </button>
+    </div>
+</ng-template>

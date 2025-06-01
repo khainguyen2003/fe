@@ -1,0 +1,53 @@
+// Các styles tùy chỉnh cho MovieListComponent
+
+// Style cho thumbnail
+.thumbnail-img {
+  transition: transform 0.2s;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Style cho các badge
+.badge {
+  font-weight: 500;
+}
+
+// Style cho phân trang
+.page-link {
+  cursor: pointer;
+}
+
+// Style cho dropdown menu
+.dropdown-item {
+  cursor: pointer;
+  
+  &:active {
+    color: #fff;
+  }
+  
+  i {
+    width: 16px;
+    text-align: center;
+  }
+}
+
+// Style cho nút thêm mới
+.btn-primary {
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+// Style cho table responsive
+.table-responsive {
+  min-height: 300px;
+}
+
+// Style cho message không có dữ liệu
+.text-muted {
+  i {
+    opacity: 0.5;
+  }
+}

@@ -1,0 +1,25 @@
+<div class="app_main">
+  <div class="grid wide container">
+    <div class="row main_container">
+      <div
+        class="col c-6 m-3 l-2 moviesposter-wrapper"
+        *ngFor="let movie of movies"
+      >
+        <a [routerLink]="['/phim', movie.slug]">
+          <img [src]="movie.thumb_url" [alt]="movie.name" />
+        </a>
+        <h3 class="moviesposter-title">{{ movie.name }}</h3>
+        <div class="moviesposter-practice">{{ movie.current_episode }}</div>
+        <div class="moviesposter-HD">{{ movie.quality }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <tui-pagination
+    [length]="pagination.totalPage"
+    [index]="pagination.page"
+    (indexChange)="goToPage($event)"
+    class="pagination"
+  ></tui-pagination>
+</div>

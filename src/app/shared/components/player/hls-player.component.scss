@@ -1,0 +1,319 @@
+.hls-player-container {
+  position: relative;
+  width: 100%;
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  user-select: none;
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;
+  max-height: 80vh;
+  display: block;
+  cursor: pointer;
+  outline: none;
+  object-fit: contain;
+  background-color: #000;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #ffffff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 16px;
+}
+
+.error-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 10;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+
+.error-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.error-text {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.retry-button {
+  padding: 8px 16px;
+  background-color: #e50914;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #f40612;
+  }
+}
+
+/* Play button center */
+.center-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.center-play-button:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Custom controls */
+.custom-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7) 40%);
+  padding: 10px 0 5px;
+  z-index: 5;
+  transition: opacity 0.3s;
+  opacity: 0;
+  color: white;
+}
+
+.hls-player-container:hover .custom-controls {
+  opacity: 1;
+}
+
+/* Hide controls when video is paused */
+.hls-player-container .custom-controls.hidden {
+  display: none;
+}
+
+/* Progress bar */
+.progress-container {
+  position: relative;
+  height: 20px;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.progress-bar {
+  position: relative;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progress-buffer {
+  position: absolute;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 0%;
+  transition: width 0.2s;
+}
+
+.progress-current {
+  position: absolute;
+  height: 100%;
+  background-color: #e50914;
+  width: 0%;
+  transition: width 0.1s;
+}
+
+.progress-seek {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Control buttons */
+.controls-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px 5px;
+}
+
+.left-controls, .right-controls {
+  display: flex;
+  align-items: center;
+}
+
+.control-button {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+  
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.control-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Volume control */
+.volume-control {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.volume-slider {
+  width: 60px;
+  height: 4px;
+  margin-left: 5px;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  transition: width 0.2s;
+  
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+/* Time display */
+.time-display {
+  font-size: 14px;
+  font-family: monospace;
+  margin-left: 10px;
+  min-width: 85px; /* Prevent layout shifts */
+}
+
+/* Quality selector */
+.quality-control {
+  margin-right: 10px;
+  
+  select {
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    outline: none;
+    font-size: 12px;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* Fullscreen styles */
+.hls-player-container:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  
+  .video-player {
+    max-height: none;
+    height: 100%;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .volume-slider {
+    width: 40px;
+  }
+  
+  .time-display {
+    font-size: 12px;
+    margin-left: 5px;
+  }
+  
+  .control-icon {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .volume-control {
+    display: none; /* Hide volume slider on very small screens */
+  }
+}

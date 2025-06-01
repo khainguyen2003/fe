@@ -1,0 +1,233 @@
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h2 class="fw-bold mb-1">Quản lý tập phim</h2>
+                    <p class="text-muted mb-0" *ngIf="movie">
+                        <a (click)="backToMovieList()" class="text-decoration-none cursor-pointer">Danh sách phim</a> /
+                        <a (click)="goToMovieEdit()" class="text-decoration-none cursor-pointer">{{movie.name}}</a> /
+                        Tập phim
+                    </p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" (click)="openEpisodeModal(episodeModal)">
+                        <i class="bi bi-plus-lg me-1"></i> Thêm tập mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông tin phim -->
+    <div class="row mb-4" *ngIf="movie">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row">
+                        <div class="flex-shrink-0 text-center mb-3 mb-md-0 me-md-4">
+                            <img [src]="movie.thumbnailUrl" class="movie-thumbnail rounded" alt="Movie thumbnail">
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 class="mb-2">{{movie.name}}</h4>
+                            <div class="mb-3">
+                                <span class="badge bg-primary me-2">
+                                    <i class="bi bi-collection-play me-1"></i> {{movie.totalEpisodes}} tập
+                                </span>
+                                <span class="badge bg-secondary me-2">
+                                    <i class="bi bi-hash me-1"></i> ID: {{movie.id}}
+                                </span>
+                            </div>
+                            <p class="text-muted mb-0">
+                                Quản lý các tập phim, bạn có thể thêm, sửa, xóa các tập phim tại đây.
+                                Chuyển đến <a [routerLink]="['/admin/movies/edit', movieId]"
+                                    class="text-decoration-none">thông tin phim</a> để quản lý chi tiết phim.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách tập phim -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Danh sách tập phim</h5>
+                    <div class="d-flex">
+                        <div class="input-group me-2">
+                            <span class="input-group-text bg-transparent">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" placeholder="Tìm kiếm tập phim...">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4" style="width: 80px">Tập</th>
+                                    <th scope="col">Tiêu đề</th>
+                                    <th scope="col" style="width: 100px">Thời lượng</th>
+                                    <th scope="col" style="width: 120px">Trạng thái</th>
+                                    <th scope="col" style="width: 120px">Lượt xem</th>
+                                    <th scope="col" style="width: 150px">Ngày tạo</th>
+                                    <th scope="col" style="width: 120px" class="text-end pe-4">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let episode of episodes">
+                                    <td class="ps-4">
+                                        <span class="badge bg-primary">Tập {{episode.episodeNumber}}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img [src]="episode.thumbnailUrl" class="episode-thumb rounded me-3"
+                                                alt="Episode thumbnail">
+                                            <div>
+                                                <h6 class="mb-0">{{episode.title}}</h6>
+                                                <small class="text-muted d-none d-md-block">{{episode.videoUrl}}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{episode.duration}} phút</td>
+                                    <td>
+                                        <span [ngClass]="{
+                        'badge rounded-pill bg-success': episode.status === 'published',
+                        'badge rounded-pill bg-warning text-dark': episode.status === 'processing',
+                        'badge rounded-pill bg-secondary': episode.status === 'draft'
+                      }">
+                                            {{ episode.status === 'published' ? 'Đã xuất bản' :
+                                            episode.status === 'processing' ? 'Đang xử lý' : 'Bản nháp' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-eye me-1 text-muted"></i>
+                                            <span>{{episode.views | number}}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{episode.createdAt | date:'dd/MM/yyyy'}}</td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-sm btn-outline-primary me-1"
+                                            (click)="openEpisodeModal(episodeModal, episode)">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" (click)="deleteEpisode(episode)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent text-center py-3" *ngIf="episodes.length === 0">
+                    <p class="text-muted mb-0">Chưa có tập phim nào. Hãy thêm tập phim mới.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm/Sửa tập phim -->
+<ng-template #episodeModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Chỉnh sửa tập phim' : 'Thêm tập phim mới' }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="episodeForm">
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <label for="episodeTitle" class="form-label">Tiêu đề tập phim</label>
+                    <input type="text" class="form-control" id="episodeTitle" formControlName="title"
+                        placeholder="Nhập tiêu đề tập phim">
+                    <div class="invalid-feedback"
+                        *ngIf="episodeForm.get('title')?.invalid && episodeForm.get('title')?.touched">
+                        Vui lòng nhập tiêu đề tập phim.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="episodeNumber" class="form-label">Số tập</label>
+                    <input type="number" class="form-control" id="episodeNumber" formControlName="episodeNumber"
+                        placeholder="Số tập" min="1">
+                    <div class="invalid-feedback"
+                        *ngIf="episodeForm.get('episodeNumber')?.invalid && episodeForm.get('episodeNumber')?.touched">
+                        Vui lòng nhập số tập hợp lệ.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="episodeDuration" class="form-label">Thời lượng (phút)</label>
+                    <input type="number" class="form-control" id="episodeDuration" formControlName="duration"
+                        placeholder="Thời lượng" min="1">
+                    <div class="invalid-feedback"
+                        *ngIf="episodeForm.get('duration')?.invalid && episodeForm.get('duration')?.touched">
+                        Vui lòng nhập thời lượng hợp lệ.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="episodeStatus" class="form-label">Trạng thái</label>
+                    <select class="form-select" id="episodeStatus" formControlName="status">
+                        <option value="draft">Bản nháp</option>
+                        <option value="processing">Đang xử lý</option>
+                        <option value="published">Đã xuất bản</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="videoFile" class="form-label">File video</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="videoFile" (change)="onVideoFileSelected($event)"
+                            accept="video/mp4,video/x-matroska">
+                        <button class="btn btn-outline-secondary" type="button">Tải lên</button>
+                    </div>
+                    <small class="form-text text-muted">Chấp nhận file MP4, MKV (tối đa 2GB).</small>
+                </div>
+                <div class="col-md-6">
+                    <label for="thumbnailFile" class="form-label">Hình thu nhỏ</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="thumbnailFile"
+                            (change)="onThumbnailFileSelected($event)" accept="image/jpeg,image/png">
+                        <button class="btn btn-outline-secondary" type="button">Tải lên</button>
+                    </div>
+                    <small class="form-text text-muted">Chấp nhận file JPG, PNG (tỷ lệ 16:9).</small>
+                </div>
+            </div>
+
+            <div class="progress mb-3" *ngIf="isUploading">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                    [style.width.%]="uploadProgress">
+                    {{uploadProgress}}%
+                </div>
+            </div>
+
+            <div class="alert alert-info" *ngIf="isEditMode && currentEpisode">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <span *ngIf="!selectedVideoFile">Giữ nguyên file video hiện tại. </span>
+                <span *ngIf="!selectedThumbnailFile">Giữ nguyên hình thu nhỏ hiện tại.</span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Hủy</button>
+        <button type="button" class="btn btn-primary" [disabled]="episodeForm.invalid || isUploading"
+            (click)="saveEpisode()">
+            <span *ngIf="isUploading">
+                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                Đang tải lên...
+            </span>
+            <span *ngIf="!isUploading">{{ isEditMode ? 'Cập nhật' : 'Thêm mới' }}</span>
+        </button>
+    </div>
+</ng-template>

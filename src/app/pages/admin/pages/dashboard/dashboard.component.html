@@ -1,0 +1,160 @@
+<div class="container-fluid">
+    <!-- Tiêu đề trang -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2 class="fw-bold">Dashboard</h2>
+        <p class="text-muted">Tổng quan hoạt động của hệ thống</p>
+      </div>
+    </div>
+  
+    <!-- Thống kê tổng quan -->
+    <div class="row mb-4">
+      <div class="col-12 col-md-6 col-xl-3 mb-3" *ngFor="let card of statCards">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center">
+            <div class="flex-shrink-0 me-3">
+              <div class="icon-box bg-light-{{card.color}} text-{{card.color}}">
+                <i [class]="card.icon"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <h6 class="text-muted mb-1">{{card.title}}</h6>
+              <div class="d-flex align-items-center">
+                <h3 class="mb-0 me-2">{{card.value}}</h3>
+                <span class="badge bg-success-subtle text-success">
+                  <i class="bi bi-arrow-up-short"></i>{{card.increase}}%
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0 py-2">
+            <a [routerLink]="card.link" class="text-{{card.color}} small stretched-link text-decoration-none">Xem chi tiết <i class="bi bi-arrow-right-short"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Biểu đồ & Thống kê lượt xem -->
+    <div class="row mb-4">
+      <!-- Biểu đồ lượt xem -->
+      <div class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Lượt xem trong tuần</h5>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="viewsDropdown" data-bs-toggle="dropdown">
+                Tuần này
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item active" href="#">Tuần này</a></li>
+                <li><a class="dropdown-item" href="#">Tháng này</a></li>
+                <li><a class="dropdown-item" href="#">Quý này</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Phần này sẽ tích hợp Chart.js sau -->
+            <div class="chart-container" style="height: 300px; position: relative;">
+              <div class="d-flex justify-content-center align-items-center h-100 text-muted">
+                <div class="text-center">
+                  <i class="bi bi-bar-chart-line fs-1 mb-3 d-block"></i>
+                  <p>Biểu đồ lượt xem sẽ hiển thị ở đây</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Thống kê thể loại -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-transparent py-3">
+            <h5 class="mb-0">Phim theo thể loại</h5>
+          </div>
+          <div class="card-body">
+            <!-- Phần này sẽ tích hợp Chart.js sau -->
+            <div class="chart-container" style="height: 300px; position: relative;">
+              <div class="d-flex justify-content-center align-items-center h-100 text-muted">
+                <div class="text-center">
+                  <i class="bi bi-pie-chart-fill fs-1 mb-3 d-block"></i>
+                  <p>Biểu đồ thể loại sẽ hiển thị ở đây</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Phim gần đây và Phim nổi bật -->
+    <div class="row">
+      <!-- Phim được thêm gần đây -->
+      <div class="col-12 mb-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Phim được thêm gần đây</h5>
+            <a routerLink="/admin/movies" class="btn btn-sm btn-primary">
+              <i class="bi bi-plus-lg me-1"></i> Thêm phim mới
+            </a>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" class="ps-4">Phim</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Lượt xem</th>
+                    <th scope="col">Ngày thêm</th>
+                    <th scope="col" class="text-end pe-4">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let movie of recentMovies">
+                    <td class="ps-4">
+                      <div class="d-flex align-items-center">
+                        <img [src]="movie.thumbnail" class="rounded movie-thumb me-3" alt="Movie thumbnail">
+                        <div>
+                          <h6 class="mb-0">{{movie.name}}</h6>
+                          <a [routerLink]="['/admin/movies/edit', movie.id]" class="text-decoration-none small">ID: {{movie.id}}</a>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span [ngClass]="{
+                        'badge rounded-pill bg-success': movie.status === 'published',
+                        'badge rounded-pill bg-warning text-dark': movie.status === 'processing',
+                        'badge rounded-pill bg-secondary': movie.status === 'draft'
+                      }">
+                        {{ movie.status === 'published' ? 'Đã xuất bản' : 
+                           movie.status === 'processing' ? 'Đang xử lý' : 'Bản nháp' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bi bi-eye me-1 text-muted"></i>
+                        <span>{{movie.views | number}}</span>
+                      </div>
+                    </td>
+                    <td>{{movie.date | date:'dd/MM/yyyy'}}</td>
+                    <td class="text-end pe-4">
+                      <a [routerLink]="['/admin/movies/edit', movie.id]" class="btn btn-sm btn-outline-primary me-2">
+                        <i class="bi bi-pencil-square"></i>
+                      </a>
+                      <a [routerLink]="['/admin/movies/episodes', movie.id]" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-collection-play"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent text-center py-3">
+            <a routerLink="/admin/movies" class="text-decoration-none">Xem tất cả phim <i class="bi bi-arrow-right-short"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

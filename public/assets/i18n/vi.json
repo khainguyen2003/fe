@@ -1,0 +1,42 @@
+{
+  "language": {
+    "vi": "Tiếng việt",
+    "en": "Tiếng anh"
+  },
+
+  "cancel": "Hủy bỏ",
+  "save": "Lưu",
+  "wait_approve": "Chờ duyệt",
+  "rejected": "Đã từ chối",
+  "save_and_send_approval": "Lưu và gửi duyệt",
+  "save_and_approval": "Lưu và phê duyệt",
+  "delete": "Xóa",
+  "update": "Sửa",
+  "reject": "Từ chối",
+
+  "confirm": "Xác nhận",
+  "delete_record": "Xóa bản ghi",
+  "approve_record": "Duyệt bản ghi",
+  "cancel_approval_record": "Hủy duyệt bản ghi",
+  "reject_record": "Từ chối bản ghi",
+  "send_record": "Gửi duyệt bản ghi",
+  "close": "Đóng",
+  "view_detail": "Xem chi tiết",
+  "approved": "Đã duyệt",
+  "are_you_sure_delete_record": "Bạn có chắc chắn xóa bản ghi này không?",
+  "are_you_sure_send_approve_record": "Bạn có chắc chắn gửi duyệt bản ghi này không?",
+  "are_you_sure_reject_record": "Bạn có chắc chắn từ chối bản ghi này không?",
+  "are_you_sure_approve_record": "Bạn có chắc chắn phê duyệt bản ghi này không?",
+  "are_you_sure_cancel_approve_record": "Bạn có chắc chắn hủy duyệt bản ghi này không?",
+
+  "create": "Thêm mới",
+  "import-file": "Nhập file",
+  "export-file": "Xuất file",
+  "movie": {
+    "page-title": "Quản lý phim",
+    "name_required": "Tên không được bỏ trống",
+    "name_length": "Tên phim không được vượt quá 2000 ký tự",
+    "total_episode_min": "Tổng số tập không được nhỏ hơn 1",
+    "genre_required": "Thể loại phim không được để trống"
+  }
+}

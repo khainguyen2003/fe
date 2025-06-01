@@ -1,0 +1,121 @@
+<div class="app_main">
+  <div class="main__screen-container">
+    <video #videoPlayer controls width="100%" height="auto"></video>
+  </div>
+
+  <div class="main__description-container">
+    <div class="img-box">
+      <img [src]="movie?.thumb_url" alt="" />
+    </div>
+
+    <div class="content-box">
+      <div class="content-heading">
+        <h3 class="title">{{ movie?.name }}</h3>
+        <button class="button">
+          <i class="fa-solid fa-plus"></i>
+          <span>Thêm Vào Danh Sách</span>
+        </button>
+      </div>
+
+      <div class="content-base-infor">
+        <div class="base-infor">
+          <p>{{ movieNation?.[3]?.list?.[0]?.name }}</p>
+        </div>
+
+        <div class="base-infor" *ngFor="let item of movieNation?.[1]?.list">
+          <p>{{ item.name }}</p>
+        </div>
+
+        <!-- <div class="time">
+          <svg ...>...</svg>
+          <p>{{ movie?.time || 'Đang Cập Nhật' }}</p>
+        </div>
+
+        <div class="view">
+          <svg ...>...</svg>
+          <p>123456</p>
+        </div> -->
+      </div>
+
+      <div class="content-description">
+        <p>{{ movie?.description }}</p>
+      </div>
+
+      <div class="content-details">
+        <div class="item">
+          <p>Quốc Gia :</p>
+          <span>{{ movieNation?.[4]?.list?.[0]?.name }}</span>
+        </div>
+
+        <div class="item">
+          <p>Thể Loại :</p>
+          <ng-container *ngFor="let genre of movieNation?.[2]?.list">
+            <span>{{ genre.name }},</span>
+          </ng-container>
+        </div>
+
+        <div class="item">
+          <p>Đạo Diễn :</p>
+          <span>Đang cập nhật</span>
+        </div>
+
+        <div class="item">
+          <p>Diễn Viên :</p>
+          <span>{{ movie?.cast || 'Đang Cập Nhật' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sách tập phim -->
+  <div class="main__seri-practice">
+    <span>Tập :</span>
+    <div class="seri-practice">
+      <div class="seri-practice-card" *ngFor="let ep of moviePractice">
+        <div class="name">
+          <a [routerLink]="ep.isEpisode ? [ep.slug] : [movie?.slug, ep.slug]">{{ ep.name }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gợi ý phim -->
+  <div class="row_posters">
+    <div class="content__main-title">
+      <h3 class="content__main-title-left">Có thể bạn sẽ thích</h3>
+      <h4 class="content__main-title-right">
+        <a routerLink="">Xem Tất Cả</a>
+      </h4>
+    </div>
+    <div class="content__main-posters-row">
+      <div class="moviesposter-wrapper" *ngFor="let movie of phimBo">
+        <a [routerLink]="['/phim', movie.slug]">
+          <img [src]="movie.thumb_url" [alt]="movie.name" />
+        </a>
+        <h3 class="moviesposter-title">{{ movie.name }}</h3>
+        <div class="moviesposter-practice">{{ movie.current_episode }}</div>
+        <div class="moviesposter-HD">{{ movie.quality }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phim lẻ -->
+  <div class="row_posters">
+    <div class="content__main-title">
+      <h3 class="content__main-title-left">Có thể bạn sẽ thích</h3>
+      <h4 class="content__main-title-right">
+        <a routerLink="">Xem Tất Cả</a>
+      </h4>
+    </div>
+    <div class="content__main-posters-row">
+      <div class="moviesposter-wrapper" *ngFor="let movie of phimLe">
+        <a [routerLink]="['/phim', movie.slug]">
+          <img [src]="movie.thumb_url" [alt]="movie.name" />
+        </a>
+        <h3 class="moviesposter-title">{{ movie.name }}</h3>
+        <div class="moviesposter-practice">{{ movie.current_episode }}</div>
+        <div class="moviesposter-HD">{{ movie.quality }}</div>
+      </div>
+    </div>
+  </div>
+</div>

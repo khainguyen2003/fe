@@ -1,0 +1,22 @@
+::ng-deep .pagination {
+  padding: 12px 20px;
+
+  .t-button {
+    color: white;
+    padding: 12px 12px;
+    border-radius: 8px;
+    margin: 0 4px;
+    font-size: 17px;
+    overflow: visible;
+    font-family: Arial, Helvetica, sans-serif;
+
+    &[tuiAppearance][data-appearance=primary] {
+      background-color: var(--color-gray-origin);
+      font-weight: bold;
+    }
+
+    &:hover {
+      background-color: #334155;
+    }
+  }
+} 
